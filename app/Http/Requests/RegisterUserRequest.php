@@ -28,8 +28,7 @@ class RegisterUserRequest extends FormRequest
             'name' => 'required',
             'username' => 'required|unique:users,username',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8', // Todo : Add regex pattern
-            'password_confirmation' => 'required|same:password',
+            'password' => 'required|confirmed|min:8', // Todo : Add regex pattern
         ];
     }
 
