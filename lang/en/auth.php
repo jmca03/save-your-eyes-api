@@ -16,5 +16,21 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
+    'validations' => [
+        'identifier' => [
+            'required' => 'The identifier field is required.',
+        ],
+        'password' => [
+            'required' => 'The password field is required.',
+        ]
+    ],
+    'login' => [
+        'success' => 'You have successfully logged in.',
+    ],
+    'logout' => [
+        'success' => 'You have successfully logged out.',
+    ],
+    'register' => [
+        'success' => 'You have successfully registered.',
+    ]
 ];
