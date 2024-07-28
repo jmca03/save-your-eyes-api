@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\ExistsInAnyColumn;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class LoginRequest extends FormRequest
@@ -41,7 +42,7 @@ class LoginRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
             'identifier.required' => __('auth.validations.identifier.required'),
@@ -49,17 +50,24 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Handle a passed validation attempt.
+     * Get the validated data from the request.
      *
-     * @return void
+     * @param null $key
+     * @param null $default *
+     *
+     * @return array
      */
-    protected function passedValidation(): void
+    public function validated($key = null, $default = null): array
     {
+        $validated = parent::validated();
+
+        // Determine the current identifier payload type
+        // whether it is email or username based on the user's input.
         $identifierKey = filter_var($this->input('identifier'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $this->only([
-            $identifierKey => $this->input('identifier'),
-            'password'     => $this->input('password')
-        ]);
+        return [
+            $identifierKey => $validated['identifier'],
+            ...Arr::only($validated, ['password']),
+        ];
     }
 }

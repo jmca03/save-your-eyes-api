@@ -3,21 +3,26 @@
 namespace App\Services;
 
 use App\Contracts\ApiResponseInterface;
+use App\Contracts\AuthenticationRepositoryInterface;
+use App\Models\User;
 use App\Traits\ResponseFormatter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-class AuthenticationService implements ApiResponseInterface
+class AuthenticationService implements ApiResponseInterface, AuthenticationRepositoryInterface
 {
     use ResponseFormatter;
 
     /**
      * Create a new class instance.
+     *
+     * @param \App\Models\User $user
      */
-    public function __construct()
+    public function __construct(protected User $user)
     {
-        //
     }
 
     /**
@@ -27,7 +32,7 @@ class AuthenticationService implements ApiResponseInterface
      *
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
      */
     public function login(array $payload): JsonResponse
     {
@@ -42,7 +47,7 @@ class AuthenticationService implements ApiResponseInterface
             );
         }
 
-        throw new AccessDeniedHttpException(__('auth.failed'));
+        throw new UnauthorizedHttpException(__('auth.failed'));
     }
 
     /**
@@ -59,7 +64,28 @@ class AuthenticationService implements ApiResponseInterface
         );
     }
 
-    // Todo: Register
+    /**
+     * Handles registration.
+     *
+     * @param array $payload
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(array $payload): JsonResponse
+    {
+        $user = $this->user->create($payload);
+        auth()->login($user);
+
+
+        return $this->jsonCreatedResponse(
+            data: [
+                'accessToken' => $user->createToken(config('app.name'))->accessToken,
+                ...Arr::only($user->toArray(), ['name', 'email', 'username']),
+            ],
+            message: __('auth.register.success')
+        );
+    }
+
     // Todo: Email Verification
     // Todo: Oauth
 }

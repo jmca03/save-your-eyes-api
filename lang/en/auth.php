@@ -29,5 +29,8 @@ return [
     ],
     'logout' => [
         'success' => 'You have successfully logged out.',
+    ],
+    'register' => [
+        'success' => 'You have successfully registered.',
     ]
 ];
