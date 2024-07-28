@@ -40,7 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 })->jsonForbiddenResponse(
                     message: $exception?->getMessage() ?: __("responses.api.403"),
                 )
-                : response($exception->getMessage(), 403)
+                : response($exception?->getMessage() ?: __("responses.api.403"), 403)
         );
 
         // If exception is ModelNotFoundException, use 404
@@ -51,7 +51,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 })->jsonNotFoundResponse(
                     message: $exception->getMessage() ?: __("responses.api.404"),
                 )
-                : response($exception->getMessage(), 404)
+                : response($exception->getMessage() ?: __("responses.api.404"), 404)
+        );
+
+        // If app throws AuthenticationException
+        $exceptions->render(
+            fn (\Illuminate\Auth\AuthenticationException $exception, \Illuminate\Http\Request $request) => $request->is('api/*')
+            ? (new class {
+                    use \App\Traits\ErrorJsonResponseFormatter;
+                })->jsonUnauthorizedResponse(
+                    message: $exception->getMessage() ?: __("responses.api.401"),
+                )
+                : response($exception->getMessage() ?: __("responses.api.401"), 401)
         );
 
         // Global Context
