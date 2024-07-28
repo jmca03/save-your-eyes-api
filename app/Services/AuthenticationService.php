@@ -57,7 +57,7 @@ class AuthenticationService implements ApiResponseInterface, AuthenticationRepos
      */
     public function logout(): JsonResponse
     {
-        auth()->user()->tokens()->delete();
+        auth()->user()?->tokens()?->delete();
         return $this->jsonSuccessResponse(
             data: [],
             message: __('auth.logout.success')
@@ -80,7 +80,6 @@ class AuthenticationService implements ApiResponseInterface, AuthenticationRepos
         return $this->jsonCreatedResponse(
             data: [
                 'accessToken' => $user->createToken(config('app.name'))->accessToken,
-                ...Arr::only($user->toArray(), ['name', 'email', 'username']),
             ],
             message: __('auth.register.success')
         );
