@@ -55,11 +55,14 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         // Global Context
-        $exceptions->context(fn(\Illuminate\Http\Request $request) => [
+        $exceptions->context(fn() => [
             'authId'    => auth()->check() ? auth()->id() : null,
-            'payload'   => $request->toArray(),
-            'ipAddress' => $request->ip(),
-            'userAgent' => $request->userAgent(),
+            'payload'   => [
+                'query' => request()?->query(),
+                'body'  => request()?->input(),
+            ],
+            'ipAddress' => request()->ip(),
+            'userAgent' => request()->userAgent(),
             'timestamp' => now()->format('Y-m-d H:i:s'),
         ]);
     })->create();
