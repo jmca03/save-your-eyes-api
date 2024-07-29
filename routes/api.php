@@ -10,9 +10,7 @@ Route::get('health-check', function () {
     ]);
 });
 
-/**
- * Authentication Routes
- */
+//  Authentication Routes
 Route::group([
     'prefix'     => 'auth',
     'controller' => \App\Http\Controllers\AuthenticationController::class
