@@ -36,16 +36,16 @@ jobs:
       - name: Create SQLite Database
         run: mkdir -p database && touch database/database.sqlite
 
-      # - name: Run migrations
-      #   env:
-      #     DB_CONNECTION: sqlite
-      #     DB_DATABASE: database/database.sqlite
-      #   run: php artisan migrate
+      - name: Run migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate
 
-      # - name: Set up Passport
-      #   run: |
-      #     php artisan passport:keys
-      #     php artisan passport:client --personal --name=github-workflows
+      - name: Set up Passport
+        run: |
+          php artisan passport:keys
+          php artisan passport:client --personal --name=github-workflows
 
 
       - name: Execute tests
