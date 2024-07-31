@@ -2,11 +2,9 @@ name: php-test
 run-name: ${{ github.actor }} is running tests
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - edited
+    branches:
+      - development
+      - master
 jobs:
   build:
     name: php test

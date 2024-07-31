@@ -1,11 +1,8 @@
 name: Validate Merge Request Source Branch
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - edited
+    branches:
+      - master
 jobs:
   check-branches:
     runs-on: ubuntu-latest
